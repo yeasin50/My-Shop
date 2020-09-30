@@ -1,48 +1,56 @@
 import 'package:flutter/material.dart';
-import 'package:stateManagement/widgets/product_item.dart';
-import '../models/product.dart';
+import 'package:stateManagement/widgets/grid_item.dart';
 
-class ProductOverViewScreen extends StatelessWidget {
-  final List<Product> productList = [
-    Product(
-      id: 'p1',
-      title: 'Red Shirt',
-      description: 'A red shirt - it is pretty red!',
-      price: 29.99,
-      imageUrl:
-          'https://cdn.pixabay.com/photo/2016/10/02/22/17/red-t-shirt-1710578_1280.jpg',
-    ),
- 
-    Product(
-        id: 'p2',
-        title: 'Trousers',
-        description: 'A nice pair of trousers.',
-        price: 59.99,
-        imageUrl:
-            'https://www.collinsdictionary.com/images/full/trousers_29362489_1000.jpg'),
-  ];
+enum FilterOptions {
+  Favorite,
+  All,
+}
+
+class ProductOverViewScreen extends StatefulWidget {
+  @override
+  _ProductOverViewScreenState createState() => _ProductOverViewScreenState();
+}
+
+class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
+  
+  var _showOnlyFavorite = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("My Shop"),
+        actions: <Widget>[
+          PopupMenuButton(
+            icon: Icon(
+              Icons.more_vert,
+            ),
+            onSelected: (FilterOptions value) {
+              print("choosen value " + value.toString());
+              setState(() {
+                if (value == FilterOptions.Favorite) {
+                  _showOnlyFavorite = true;
+                } else {
+                  _showOnlyFavorite = false;
+                }
+              });
+            },
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                child: Text("Favorite Only"),
+                value: FilterOptions.Favorite,
+              ),
+              PopupMenuItem(
+                child: Text(
+                  "Show All",
+                ),
+                value: FilterOptions.All,
+              )
+            ],
+          ),
+        ],
       ),
-      body: GridView.builder(
-        itemCount: productList.length,
-        padding: const EdgeInsets.all(10),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 3 / 4,//width /height ratio
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-        ),
-        itemBuilder: (ctx, i) => ProductItem(
-            productList[i].id,
-            productList[i].title,
-            productList[i].description,
-            productList[i].imageUrl),
-      ),
+      body: ProductGrid(_showOnlyFavorite),
     );
   }
 }
