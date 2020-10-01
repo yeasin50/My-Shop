@@ -13,17 +13,17 @@ class ProductGrid extends StatelessWidget {
     final productList =
         showFavorite ? productsData.favItems : productsData.items;
 
-    print("Global Fav "+ showFavorite.toString());
-    for (int i = 0; i < productList.length; i++) {
-      print(productList[i].favorite);
-    }
+    // print("Global Fav "+ showFavorite.toString());
+    // for (int i = 0; i < productList.length; i++) {
+    //   print(productList[i].favorite);
+    // }
 
     return GridView.builder(
       itemCount: productList.length,
       padding: const EdgeInsets.all(10),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 3 / 4, //width /height ratio
+        childAspectRatio: 3 / 4, /// [width]/[height] ratio 
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
       ),

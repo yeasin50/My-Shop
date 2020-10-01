@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:stateManagement/providers/cart_.dart';
 import 'package:stateManagement/providers/product.dart';
 import 'package:stateManagement/screens/product_details_screen.dart';
 
@@ -13,6 +14,7 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
+    final cart = Provider.of<Cart>(context, listen: false);
 
     /// this will not listen hole product
     print('product Rebuild');
@@ -47,7 +49,12 @@ class ProductItem extends StatelessWidget {
           ),
           trailing: IconButton(
             icon: Icon(Icons.shopping_cart),
-            onPressed: () {},
+            onPressed: () {
+              cart.addItem(
+                  productId: product.id,
+                  price: product.price,
+                  title: product.title);
+            },
             color: Theme.of(context).accentColor,
           ),
           title: Text(

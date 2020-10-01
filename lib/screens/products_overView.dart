@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:stateManagement/providers/cart_.dart';
+import 'package:stateManagement/widgets/badge.dart';
 import 'package:stateManagement/widgets/grid_item.dart';
 
 enum FilterOptions {
@@ -12,7 +15,6 @@ class ProductOverViewScreen extends StatefulWidget {
 }
 
 class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
-  
   var _showOnlyFavorite = false;
 
   @override
@@ -45,8 +47,18 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
                   "Show All",
                 ),
                 value: FilterOptions.All,
-              )
+              ),
             ],
+          ),
+          Consumer<Cart>(
+            builder: (_, cart, ch) => Badge(
+              child: ch,
+              value: cart.itemCount.toString(),
+            ),
+            child: IconButton(
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () {},
+            ),
           ),
         ],
       ),
