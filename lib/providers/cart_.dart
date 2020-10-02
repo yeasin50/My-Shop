@@ -20,6 +20,7 @@ class Cart with ChangeNotifier {
     return {..._items};
   }
 
+  //sumup the length not quantity,
   int get itemCount {
     return _items.length;
   }
@@ -53,6 +54,16 @@ class Cart with ChangeNotifier {
             quantity: 1),
       );
     }
+    notifyListeners();
+  }
+
+  void removeItem(String productid) {
+    _items.remove(productid);
+    notifyListeners();
+  }
+
+  void clearCart() {
+    _items = {};
     notifyListeners();
   }
 }

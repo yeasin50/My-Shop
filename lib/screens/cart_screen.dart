@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:stateManagement/providers/cart_.dart';
+import '../providers/cart_.dart'
+    show Cart; // only import Cart
+import '../providers/orders.dart';
+import '../widgets/cart_item.dart' as ci;
+
+/// using prefix [ci]
 
 class CartScreen extends StatelessWidget {
   static const routeName = "/card_Screen";
@@ -27,21 +32,46 @@ class CartScreen extends StatelessWidget {
                     "Total ",
                     style: TextStyle(fontSize: 20),
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
+                  Spacer(), // take all space
                   Chip(
                     label: Text(
-                      '\$${cart.totalAmount}',
-                      style: TextStyle(
-                          color: Colors.white),
+                      '\$${cart.totalAmount.toStringAsFixed(2)}',
+                      style: TextStyle(color: Colors.white),
                     ),
                     backgroundColor: Theme.of(context).primaryColor,
+                  ),
+                  FlatButton(
+                    child: Text(
+                      "ORDER NOW",
+                    ),
+                    textColor: Theme.of(context).primaryColor,
+                    onPressed: () {
+                      Provider.of<Orders>(context, listen: false).addOrder(
+                        cart.items.values.toList(),
+                        cart.totalAmount,
+                      );
+                      cart.clearCart();
+                    },
                   )
                 ],
               ),
             ),
-          )
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          // listview will take as much height it get, because listview doesn't work in column directly
+          Expanded(
+            child: ListView.builder(
+              itemCount: cart.items.length,
+              itemBuilder: (ctx, i) => ci.CartItem(
+                  id: cart.items.values.toList()[i].id,
+                  title: cart.items.values.toList()[i].title,
+                  productID: cart.items.keys.toList()[i],
+                  price: cart.items.values.toList()[i].price,
+                  quantity: cart.items.values.toList()[i].quantity),
+            ),
+          ),
         ],
       ),
     );
