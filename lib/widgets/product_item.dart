@@ -54,6 +54,27 @@ class ProductItem extends StatelessWidget {
                   productId: product.id,
                   price: product.price,
                   title: product.title);
+
+              //hiding overlap snackbar
+              Scaffold.of(context).hideCurrentSnackBar();
+
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    "Added ${product.title} to cart!",
+                  ),
+                  duration: Duration(
+                    seconds: 1,
+                    milliseconds: 500,
+                  ),
+                  action: SnackBarAction(
+                    label: "Undo",
+                    onPressed: () {
+                      cart.removeSingleItem(product.id);
+                    },
+                  ),
+                ),
+              );
             },
             color: Theme.of(context).accentColor,
           ),
