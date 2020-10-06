@@ -18,7 +18,7 @@ class Products with ChangeNotifier {
         price: 59.99,
         imageUrl:
             'https://www.collinsdictionary.com/images/full/trousers_29362489_1000.jpg'),
-   Product(
+    Product(
       id: 'p3',
       title: 'Yellow Scarf',
       description: 'Warm and cozy - exactly what you need for the winter.',
@@ -44,8 +44,30 @@ class Products with ChangeNotifier {
     return _items.where((element) => element.favorite).toList();
   }
 
-  void addProduct() {
+  void addProduct(Product product) {
     // _items.add(value);
+    final _product = Product(
+      id: DateTime.now().toString(),
+      description: product.description,
+      imageUrl: product.imageUrl,
+      price: product.price,
+      title: product.title,
+    );
+    _items.add(_product);
+    notifyListeners();
+  }
+
+  void updateProduct(String id, Product product) {
+    final indexProduct = _items.indexWhere((element) => element.id == id);
+
+    if (indexProduct >= 0) {
+      _items[indexProduct] = product;
+      notifyListeners();
+    }
+  }
+
+  void deleteProduct(String id) {
+    _items.removeWhere((element) => element.id == id);
     notifyListeners();
   }
 
