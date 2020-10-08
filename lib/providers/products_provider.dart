@@ -1,12 +1,11 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import './product.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../models/https_exception.dart';
 
+/// [Dont forget to add .json after URL ]
 class Products with ChangeNotifier {
-  final url = 'https://my-shop-2233f.firebaseio.com/products.json';
   List<Product> _items = [];
 
   List<Product> get items {
@@ -19,7 +18,7 @@ class Products with ChangeNotifier {
 
   Future<void> addProduct(Product product) async {
     /// /use as sub folder to root. [don't forget to use .json] */
-    // const url = 'https://my-shop-2233f.firebaseio.com/products';
+    const url = 'https://my-shop-2233f.firebaseio.com/products.json';
 
     try {
       final response = await http.post(
@@ -49,10 +48,13 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
+    const url = 'https://my-shop-2233f.firebaseio.com/products.json';
     try {
       final response = await http.get(url);
       final extractData = json.decode(response.body) as Map<String, dynamic>;
       final List<Product> loadProducts = [];
+      if (extractData == null) return;
+
       extractData.forEach((key, prodData) {
         loadProducts.add(Product(
           id: key,
@@ -70,18 +72,44 @@ class Products with ChangeNotifier {
     }
   }
 
-  void updateProduct(String id, Product product) {
+  Future<void> updateProduct(String id, Product product) async {
     final indexProduct = _items.indexWhere((element) => element.id == id);
 
     if (indexProduct >= 0) {
+      final url = 'https://my-shop-2233f.firebaseio.com/products/$id.json';
+      await http.patch(url,
+          body: json.encode({
+            'title': product.title,
+            'description': product.description,
+            'imageUrl': product.imageUrl,
+            'price': product.price
+          }));
       _items[indexProduct] = product;
       notifyListeners();
     }
   }
 
-  void deleteProduct(String id) {
-    _items.removeWhere((element) => element.id == id);
+  Future<void> deleteProduct(String id) async {
+    ///* status code
+    /// 200, 201 = everything work
+    /// 300 redirected
+    /// 400 , 500 something went worng
+    ///
+    final url = 'https://my-shop-2233f.firebaseio.com/products/$id.json';
+    final exitProductIndex = _items.indexWhere((element) => element.id == id);
+    var exitProduct = _items[exitProductIndex];
+    _items.removeAt(exitProductIndex);
     notifyListeners();
+
+    final response = await http.delete(url);
+
+    print(response.statusCode);
+    if (response.statusCode >= 400) {
+      _items.insert(exitProductIndex, exitProduct);
+      notifyListeners();
+      throw HttpException('Couldn\'t delete product.');
+    }
+    exitProduct = null;
   }
 
   Product findByID(String id) {

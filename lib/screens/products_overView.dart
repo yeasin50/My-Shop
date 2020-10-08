@@ -25,9 +25,9 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
   @override
   void initState() {
 /* if we wanna get context,use future approce here */
-    Future.delayed(Duration.zero).then((value) {
-      /// we are able to use context here.
-    });
+    // Future.delayed(Duration.zero).then((value) {
+    //   /// we are able to use context here.
+    // });
     super.initState();
   }
 
