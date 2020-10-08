@@ -6,7 +6,7 @@ class Product with ChangeNotifier {
   final String description;
   final double price;
   final String imageUrl;
-  bool favorite; // this will change according to person wish
+  bool isFavorite; // this will change according to person wish
 
   Product({
     @required this.id,
@@ -14,11 +14,11 @@ class Product with ChangeNotifier {
     @required this.description,
     @required this.price,
     @required this.imageUrl,
-    this.favorite = false,
+    this.isFavorite = false,
   });
 
   void toggleFavoriteStatus() {
-    favorite = !favorite;
+    isFavorite = !isFavorite;
     notifyListeners();
   }
 }

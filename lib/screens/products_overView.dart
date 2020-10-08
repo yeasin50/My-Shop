@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:stateManagement/providers/cart_.dart';
-import 'package:stateManagement/screens/cart_screen.dart';
-import 'package:stateManagement/widgets/badge.dart';
-import 'package:stateManagement/widgets/grid_item.dart';
-import 'package:stateManagement/widgets/main_drawer.dart';
+import '../providers/cart_.dart';
+import '../screens/cart_screen.dart';
+import '../widgets/badge.dart';
+import '../widgets/grid_item.dart';
+import '../widgets/main_drawer.dart';
+import '../providers/products_provider.dart';
 
 enum FilterOptions {
   Favorite,
@@ -18,6 +19,35 @@ class ProductOverViewScreen extends StatefulWidget {
 
 class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
   var _showOnlyFavorite = false;
+  var _isInit = true;
+  var _isLoading = true;
+
+  @override
+  void initState() {
+/* if we wanna get context,use future approce here */
+    Future.delayed(Duration.zero).then((value) {
+      /// we are able to use context here.
+    });
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Products>(context).fetchAndSetProducts().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+
+    _isInit = false;
+
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +96,11 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
           ),
         ],
       ),
-      body: ProductGrid(_showOnlyFavorite),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ProductGrid(_showOnlyFavorite),
       drawer: AppDrawer(),
     );
   }
