@@ -24,16 +24,17 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> toggleFavoriteStatus() async {
+  Future<void> toggleFavoriteStatus(String token, String userId) async {
     final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
-    final url = 'https://my-shop-2233f.firebaseio.com/products/$id';
+    final url =
+        'https://my-shop-2233f.firebaseio.com/products/$userId/$id.json?auth=$token';
     try {
-      final response = await http.patch(
+      final response = await http.put(
         url,
         body: json.encode({
-          'isFavorite': isFavorite,
+          isFavorite,
         }),
       );
       /* patch, put or delete doesn't throw exception*/

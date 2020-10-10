@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:stateManagement/providers/cart_.dart';
-import 'package:stateManagement/providers/product.dart';
+import '../providers/auth.dart';
+import '../providers/cart_.dart';
+import '../providers/product.dart';
 import 'package:stateManagement/screens/product_details_screen.dart';
 
 class ProductItem extends StatelessWidget {
@@ -15,6 +16,7 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
+    final authData = Provider.of<Auth>(context, listen: false);
 
     /// this will not listen hole product
     print('product Rebuild');
@@ -42,7 +44,10 @@ class ProductItem extends StatelessWidget {
               icon: Icon(
                   product.isFavorite ? Icons.favorite : Icons.favorite_border),
               onPressed: () {
-                product.toggleFavoriteStatus();
+                product.toggleFavoriteStatus(
+                  authData.token,
+                  authData.userId,
+                );
               },
               color: Theme.of(context).accentColor,
             ),
