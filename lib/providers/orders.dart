@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import './cart_.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../models/constants.dart' as Constants;
 
 class OrderItem {
   final String id;
@@ -26,7 +27,8 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> fetchAndSetOrders() async {
-    final url = 'https://my-shop-2233f.firebaseio.com/orders.json?auth=$authToken';
+    // TODO: add base api 
+    final url = '${Constants.BASE_API_REALTIMEdb}/orders.json?auth=$authToken';
     final response = await http.get(url);
     // print(json.decode(response.body));
     final List<OrderItem> loadedOrders = [];
@@ -57,7 +59,9 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
-    final url = 'https://my-shop-2233f.firebaseio.com/orders.jsonauth=$authToken';
+    // TODO: add base api 
+    final url =
+        '${Constants.BASE_API_REALTIMEdb}/orders.jsonauth=$authToken';
     final timeStamp = DateTime.now();
 
     final response = await http.post(url,

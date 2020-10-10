@@ -3,6 +3,8 @@ import './product.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/https_exception.dart';
+import '../models/constants.dart' as Constants;
+
 
 /// [Dont forget to add .json after URL ]
 class Products with ChangeNotifier {
@@ -21,8 +23,9 @@ class Products with ChangeNotifier {
 
   Future<void> addProduct(Product product) async {
     /// /use as sub folder to root. [don't forget to use .json] */
+    /// // TODO: add base api 
     final url =
-        'https://my-shop-2233f.firebaseio.com/products.json?auth=$authToken';
+        '${Constants.BASE_API_REALTIMEdb}/products.json?auth=$authToken';
 
     try {
       final response = await http.post(
@@ -53,16 +56,18 @@ class Products with ChangeNotifier {
 
 // this takes optional positional argument
   Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
+    // TODO: add base api 
     final filterSetting =
         filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
-    var url = 'https://my-shop-2233f.firebaseio.com/products.json?auth=$authToken&$filterSetting';
+    var url = '${Constants.BASE_API_REALTIMEdb}/products.json?auth=$authToken&$filterSetting';
     try {
       final response = await http.get(url);
       final extractData = json.decode(response.body) as Map<String, dynamic>;
       final List<Product> loadProducts = [];
       if (extractData == null) return;
+      // TODO: add base api 
       url =
-          'https://my-shop-2233f.firebaseio.com/products/$userId?auth=$authToken';
+          '${Constants.BASE_API_REALTIMEdb}/products/$userId?auth=$authToken';
       final favResponse = await http.get(url);
       final favData = json.decode(favResponse.body);
 
@@ -91,8 +96,9 @@ class Products with ChangeNotifier {
     final indexProduct = _items.indexWhere((element) => element.id == id);
 
     if (indexProduct >= 0) {
+      // TODO: add base api 
       final url =
-          'https://my-shop-2233f.firebaseio.com/products/$id.json?auth=$authToken';
+          '${Constants.BASE_API_REALTIMEdb}/products/$id.json?auth=$authToken';
       await http.patch(url,
           body: json.encode({
             'title': product.title,
@@ -111,8 +117,9 @@ class Products with ChangeNotifier {
     /// 300 redirected
     /// 400 , 500 something went worng
     ///
+    ///// TODO: add base api 
     final url =
-        'https://my-shop-2233f.firebaseio.com/products/$id.json?auth=$authToken';
+        '${Constants.BASE_API_REALTIMEdb}/products/$id.json?auth=$authToken';
     final exitProductIndex = _items.indexWhere((element) => element.id == id);
     var exitProduct = _items[exitProductIndex];
     _items.removeAt(exitProductIndex);

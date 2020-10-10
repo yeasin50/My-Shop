@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../models/constants.dart' as Constants;
 
 class Product with ChangeNotifier {
   final String id;
@@ -28,8 +29,9 @@ class Product with ChangeNotifier {
     final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
+    // TODO: add base api 
     final url =
-        'https://my-shop-2233f.firebaseio.com/products/$userId/$id.json?auth=$token';
+        '${Constants.BASE_API_REALTIMEdb}/products/$userId/$id.json?auth=$token';
     try {
       final response = await http.put(
         url,

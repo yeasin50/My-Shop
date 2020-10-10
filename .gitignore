@@ -1,3 +1,7 @@
+#removing my api file that holds apps personal information
+lib/models/constants.dart
+
+
 # Miscellaneous
 *.class
 *.log
