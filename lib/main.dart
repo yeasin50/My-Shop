@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:stateManagement/providers/auth.dart';
+import 'package:stateManagement/screens/splash_screen.dart';
 import './screens/edit_product_screen.dart';
 import './screens/order_screen.dart';
 import './providers/cart_.dart';
@@ -31,12 +32,12 @@ class MyApp extends StatelessWidget {
         //         auth.token,
         //         auth.userId,
         //       )), // in v3 use builder instead of create
-         ChangeNotifierProxyProvider<Auth, Products>(
+        ChangeNotifierProxyProvider<Auth, Products>(
           update: (ctx, auth, previousProducts) => Products(
-                auth.token,
-                auth.userId,
-                previousProducts == null ? [] : previousProducts.items,
-              ),
+            auth.token,
+            auth.userId,
+            previousProducts == null ? [] : previousProducts.items,
+          ),
         ),
         ChangeNotifierProvider.value(
           value: Cart(),
@@ -45,11 +46,10 @@ class MyApp extends StatelessWidget {
         // FIXME It may need to change update-> create
         ChangeNotifierProxyProvider<Auth, Orders>(
           update: (ctx, auth, previousOrders) => Orders(
-                auth.token,
-                previousOrders == null ? [] : previousOrders.orders,
-              ),
+            auth.token,
+            previousOrders == null ? [] : previousOrders.orders,
+          ),
         ),
-       
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(
@@ -59,7 +59,15 @@ class MyApp extends StatelessWidget {
             accentColor: Colors.deepOrange,
             fontFamily: 'Lato',
           ),
-          home: auth.isAuth ? ProductOverViewScreen() : AuthScreen(),
+          home: auth.isAuth
+              ? ProductOverViewScreen()
+              : FutureBuilder(
+                  future: auth.tryAutoLogin(),
+                  builder: (ctx, snapshot) =>
+                      snapshot.connectionState == ConnectionState.waiting
+                          ? SplashScreen()
+                          : AuthScreen(),
+              ),
           debugShowCheckedModeBanner: false,
           routes: {
             ProductDetailsScreen.routeName: (ctx) => ProductDetailsScreen(),

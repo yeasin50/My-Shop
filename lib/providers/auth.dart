@@ -2,12 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/constants.dart' as Constants;
-import 'package:stateManagement/models/https_exception.dart';
+import '../models/https_exception.dart';
+import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth with ChangeNotifier {
+  static const String KEY_USER_DATA = 'userData';
   String _token;
   DateTime _experyDate;
   String _userId;
+  Timer _authTimer;
 
   String get userId {
     return _userId;
@@ -58,11 +62,40 @@ class Auth with ChangeNotifier {
           ),
         ),
       );
+
+      _autoLogout();
       notifyListeners();
       // print(response.body);
+      final sharePrefs = await SharedPreferences.getInstance();
+      final userData = json.encode({
+        'token': _token,
+        'userId': _userId,
+        'expiryDate': _experyDate.toIso8601String(),
+      });
+      sharePrefs.setString(KEY_USER_DATA, userData);
     } catch (e) {
       throw e;
     }
+  }
+
+  Future<bool> tryAutoLogin() async {
+    final pref = await SharedPreferences.getInstance();
+    if (!pref.containsKey(KEY_USER_DATA)) {
+      return false;
+    }
+    final extractData =
+        json.decode(pref.getString(KEY_USER_DATA)) as Map<String, Object>;
+    final expairyDate = DateTime.parse(extractData['expiryDate']);
+    if (expairyDate.isBefore(DateTime.now())) {
+      return false;
+    }
+
+    _token = extractData['token'];
+    _userId = extractData['userId'];
+    _experyDate = expairyDate;
+    notifyListeners();
+    _autoLogout();
+    return true;
   }
 
   Future<void> logIn(String emai, String password) async {
@@ -71,5 +104,29 @@ class Auth with ChangeNotifier {
 
   Future<void> signUp(String emai, String password) async {
     return _auth(emai, password, 'signUp');
+  }
+
+  Future<void> logOut() async {
+    _token = null;
+    _userId = null;
+    _experyDate = null;
+    if (_authTimer != null) {
+      _authTimer.cancel();
+      _authTimer = null;
+    }
+    notifyListeners();
+    final pres = await SharedPreferences.getInstance();
+    
+    // here we can use clear being single data stored 
+    // pres.remove(KEY_USER_DATA);
+    pres.clear();
+  }
+
+  void _autoLogout() {
+    if (_authTimer != null) {
+      _authTimer.cancel();
+    }
+    var expireTime = _experyDate.difference(DateTime.now()).inSeconds;
+    _authTimer = Timer(Duration(seconds: expireTime), logOut);
   }
 }
