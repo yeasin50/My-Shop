@@ -33,7 +33,11 @@ class Cart with ChangeNotifier {
     return temp;
   }
 
-  void addItem({String productId, double price, String title}) {
+  void addItem({
+    String productId,
+    double price,
+    String title,
+  }) {
     if (_items.containsKey(productId)) {
       // if we have the item already, update the quantity
       _items.update(
@@ -63,7 +67,9 @@ class Cart with ChangeNotifier {
   }
 
   void removeSingleItem(String productId) {
-    if (!_items.containsKey(productId)) return;
+    if (!_items.containsKey(productId)) {
+      return;
+    }
     if (_items[productId].quantity > 1) {
       _items.update(
         productId,

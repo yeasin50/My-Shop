@@ -136,7 +136,7 @@ class _AuthCardState extends State<AuthCard> {
     try {
       if (_authMode == AuthMode.Login) {
         // Log user in
-        await Provider.of<Auth>(context).logIn(
+        await Provider.of<Auth>(context, listen: false).logIn(
           _authData['email'],
           _authData['password'],
         );
@@ -234,7 +234,7 @@ class _AuthCardState extends State<AuthCard> {
                     decoration: InputDecoration(labelText: 'Confirm Password'),
                     obscureText: true,
                     validator: _authMode == AuthMode.Signup
-                        ? (value) {
+                        ? (value){
                             if (value != _passwordController.text) {
                               return 'Passwords do not match!';
                             }

@@ -28,17 +28,19 @@ class Product with ChangeNotifier {
   Future<void> toggleFavoriteStatus(String token, String userId) async {
     final oldStatus = isFavorite;
     isFavorite = !isFavorite;
+    print(isFavorite);
     notifyListeners();
-    // TODO: add base api 
+    // TODO: add base api
     final url =
-        '${Constants.BASE_API_REALTIMEdb}/products/$userId/$id.json?auth=$token';
+        '${Constants.BASE_API_REALTIMEdb}/userFavorites/$userId/$id.json?auth=$token';
     try {
       final response = await http.put(
         url,
-        body: json.encode({
+        body: json.encode(
           isFavorite,
-        }),
+        ),
       );
+      print(response.body);
       /* patch, put or delete doesn't throw exception*/
       if (response.statusCode >= 400) {
         _revFavValue(oldStatus);

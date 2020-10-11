@@ -6,8 +6,7 @@ import '../widgets/order_item.dart';
 
 class OrderScreen extends StatelessWidget {
   static const routename = "/orders_";
-  const OrderScreen({Key key}) : super(key: key);
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,6 +14,7 @@ class OrderScreen extends StatelessWidget {
         title: Text("Your Orders"),
       ),
       drawer: AppDrawer(),
+     
       body: FutureBuilder(
         future: Provider.of<Orders>(context, listen: false).fetchAndSetOrders(),
         builder: (ctx, dataSnapShot) {

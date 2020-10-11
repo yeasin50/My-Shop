@@ -94,10 +94,15 @@ class _OrderButtonState extends State<OrderButton> {
               setState(() {
                 _isLoading = true;
               });
+
+              // print(widget.cart.items.values.map((item) {
+              //   print(item.title);
+              // }).toList());
               await Provider.of<Orders>(context, listen: false).addOrder(
                 widget.cart.items.values.toList(),
                 widget.cart.totalAmount,
               );
+
               setState(() {
                 _isLoading = false;
               });

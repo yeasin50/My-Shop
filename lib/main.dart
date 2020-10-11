@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:stateManagement/providers/auth.dart';
-import 'package:stateManagement/screens/edit_product_screen.dart';
-import 'package:stateManagement/screens/order_screen.dart';
+import './screens/edit_product_screen.dart';
+import './screens/order_screen.dart';
 import './providers/cart_.dart';
 import './providers/orders.dart';
 import './providers/products_provider.dart';
@@ -10,7 +10,7 @@ import './screens/cart_screen.dart';
 import './screens/product_details_screen.dart';
 import './screens/products_overView.dart';
 import './screens/user_product_screen.dart';
-import 'screens/auth_screen.dart';
+import './screens/auth_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -19,31 +19,40 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => Auth(),
+        ChangeNotifierProvider.value(
+          // create: (context) => Auth(),
+          value: Auth(),
         ),
         // // FIXME It may need to change update-> create
-        ChangeNotifierProxyProvider<Auth, Products>(
-          update: (ctx, auth, prevPorducts) => Products(
-            auth.token,
-            auth.userId,
-            prevPorducts == null ? [] : prevPorducts.items,
-          ),
-        ), // in v3 use builder instead of create
-
-        ChangeNotifierProvider(
-          create: (ctx) => Cart(),
+        // ChangeNotifierProxyProvider<Auth, Products>(
+        //     create: (ctx) => Products(),
+        //     update: (_, auth, data) => data
+        //       ..update(
+        //         auth.token,
+        //         auth.userId,
+        //       )), // in v3 use builder instead of create
+         ChangeNotifierProxyProvider<Auth, Products>(
+          update: (ctx, auth, previousProducts) => Products(
+                auth.token,
+                auth.userId,
+                previousProducts == null ? [] : previousProducts.items,
+              ),
         ),
+        ChangeNotifierProvider.value(
+          value: Cart(),
+        ),
+
         // FIXME It may need to change update-> create
         ChangeNotifierProxyProvider<Auth, Orders>(
-          update: (ctx, auth, prevOrders) => Orders(
-            auth.token,
-            prevOrders.orders == null ? [] : prevOrders.orders,
-          ),
+          update: (ctx, auth, previousOrders) => Orders(
+                auth.token,
+                previousOrders == null ? [] : previousOrders.orders,
+              ),
         ),
+       
       ],
       child: Consumer<Auth>(
-        builder: (ctx, auth, ch) => MaterialApp(
+        builder: (ctx, auth, _) => MaterialApp(
           title: "My Shop",
           theme: ThemeData(
             primarySwatch: Colors.purple,

@@ -11,23 +11,32 @@ class OrderItem {
   final List<CartItem> products;
   final DateTime dateTime;
 
-  OrderItem(
-      {@required this.id,
-      @required this.amount,
-      @required this.dateTime,
-      @required this.products});
+  OrderItem({
+    @required this.id,
+    @required this.amount,
+    @required this.dateTime,
+    @required this.products,
+  });
 }
 
 class Orders with ChangeNotifier {
   List<OrderItem> _orders = [];
-  final String authToken;
+  String authToken;
+  // final String userId;
   Orders(this.authToken, this._orders);
+  void update(
+    String authToken,
+    // this.userId,
+  ) {
+    authToken = authToken;
+  }
+
   List<OrderItem> get orders {
     return [..._orders];
   }
 
   Future<void> fetchAndSetOrders() async {
-    // TODO: add base api 
+    // TODO: add base api
     final url = '${Constants.BASE_API_REALTIMEdb}/orders.json?auth=$authToken';
     final response = await http.get(url);
     // print(json.decode(response.body));
@@ -59,12 +68,15 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
-    // TODO: add base api 
+    // TODO: add base api
+    // final url = '${Constants.BASE_API_REALTIMEdb}/orders.json?auth=$authToken';
     final url =
-        '${Constants.BASE_API_REALTIMEdb}/orders.jsonauth=$authToken';
+        'https://my-shop-2233f.firebaseio.com/orders.json?auth=$authToken';
     final timeStamp = DateTime.now();
 
-    final response = await http.post(url,
+    try {
+      final response = await http.post(
+        url,
         body: json.encode({
           'amount': total,
           'dateTime': timeStamp.toIso8601String(),
@@ -72,19 +84,25 @@ class Orders with ChangeNotifier {
               .map((cp) => {
                     'id': cp.id,
                     'title': cp.title,
-                    'price': cp.price,
                     'quantity': cp.quantity,
+                    'price': cp.price,
+                    // 'creatorId':
                   })
               .toList(),
-        }));
-    _orders.insert(
-      0,
-      OrderItem(
-          id: json.decode(response.body)['name'],
-          amount: total,
-          dateTime: timeStamp,
-          products: cartProducts),
-    );
-    notifyListeners();
+        }),
+      );
+      print(json.decode(response.body));
+      _orders.insert(
+        0,
+        OrderItem(
+            id: json.decode(response.body)['name'],
+            amount: total,
+            dateTime: timeStamp,
+            products: cartProducts),
+      );
+      notifyListeners();
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }
