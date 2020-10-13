@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../models/constants.dart' as Constants;
-import '../models/https_exception.dart';
+import '../utils/constants.dart' as Constants;
+import '../utils/https_exception.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 

@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import './cart_.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../models/constants.dart' as Constants;
+import '../utils/constants.dart' as Constants;
 
 class OrderItem {
   final String id;

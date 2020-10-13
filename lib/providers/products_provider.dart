@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import './product.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../models/https_exception.dart';
-import '../models/constants.dart' as Constants;
+import '../utils/https_exception.dart';
+import '../utils/constants.dart' as Constants;
 
 /// [Dont forget to add .json after URL ]
 class Products with ChangeNotifier {

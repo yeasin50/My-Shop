@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:stateManagement/providers/auth.dart';
 import 'package:stateManagement/screens/splash_screen.dart';
+import 'package:stateManagement/utils/coustom_route.dart';
 import './screens/edit_product_screen.dart';
 import './screens/order_screen.dart';
 import './providers/cart_.dart';
@@ -55,10 +56,14 @@ class MyApp extends StatelessWidget {
         builder: (ctx, auth, _) => MaterialApp(
           title: "My Shop",
           theme: ThemeData(
-            primarySwatch: Colors.purple,
-            accentColor: Colors.deepOrange,
-            fontFamily: 'Lato',
-          ),
+              primarySwatch: Colors.purple,
+              accentColor: Colors.deepOrange,
+              fontFamily: 'Lato',
+              //TODO: custom route transation
+              pageTransitionsTheme: PageTransitionsTheme(builders: {
+                TargetPlatform.android: CustomPageTransitionBuilder(),
+                TargetPlatform.iOS: CustomPageTransitionBuilder(),
+              })),
           home: auth.isAuth
               ? ProductOverViewScreen()
               : FutureBuilder(
@@ -67,7 +72,7 @@ class MyApp extends StatelessWidget {
                       snapshot.connectionState == ConnectionState.waiting
                           ? SplashScreen()
                           : AuthScreen(),
-              ),
+                ),
           debugShowCheckedModeBanner: false,
           routes: {
             ProductDetailsScreen.routeName: (ctx) => ProductDetailsScreen(),

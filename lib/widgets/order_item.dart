@@ -18,32 +18,39 @@ class _OrderItemState extends State<OrderItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(10),
-      child: Column(
-        children: <Widget>[
-          ListTile(
-            title: Text('\$${widget.order.amount}'),
-            subtitle: Text(
-                DateFormat('dd/MM/yyyy hh:mm').format(widget.order.dateTime)),
-            trailing: IconButton(
-              icon:
-                  _expanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
-              onPressed: () {
-                setState(() {
-                  _expanded = !_expanded;
-                });
-              },
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
+      height:
+          _expanded ? min(widget.order.products.length * 20.0 + 130, 200) : 100,
+      child: Card(
+        margin: EdgeInsets.all(10),
+        child: Column(
+          children: <Widget>[
+            ListTile(
+              title: Text('\$${widget.order.amount}'),
+              subtitle: Text(
+                  DateFormat('dd/MM/yyyy hh:mm').format(widget.order.dateTime)),
+              trailing: IconButton(
+                icon: _expanded
+                    ? Icon(Icons.expand_less)
+                    : Icon(Icons.expand_more),
+                onPressed: () {
+                  setState(() {
+                    _expanded = !_expanded;
+                  });
+                },
+              ),
             ),
-          ),
-          if (_expanded)
-            Container(
+            AnimatedContainer(
+              duration: Duration(milliseconds: 300),
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-              height: min(widget.order.products.length * 20.0 + 20, 200),
+              height: _expanded
+                  ? min(widget.order.products.length * 20.0 + 20, 200)
+                  : 0,
               child: ListView.builder(
                   itemCount: widget.order.products.length,
                   itemBuilder: (ctx, i) => Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text(
                             widget.order.products[i].title,
@@ -51,16 +58,17 @@ class _OrderItemState extends State<OrderItem> {
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                              '${widget.order.products[i].quantity}x  \$${widget.order.products[i].price}',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.grey,
-                              ),
-                              )
+                            '${widget.order.products[i].quantity}x  \$${widget.order.products[i].price}',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.grey,
+                            ),
+                          )
                         ],
                       )),
-            )
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

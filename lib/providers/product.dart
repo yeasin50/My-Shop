@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../models/constants.dart' as Constants;
+import '../utils/constants.dart' as Constants;
 
 class Product with ChangeNotifier {
   final String id;
