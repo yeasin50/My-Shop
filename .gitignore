@@ -1,5 +1,9 @@
-#removing my api file that holds apps personal information
-lib/models/constants.dart
+# removing my api file that holds apps personal information
+# two lines of Code was 
+# const BASE_API_REALTIMEdb = 'https://Firstore.firebaseio.com';
+# const WEB_API_KEY = 'AIzaSyxxxxxxxxxxxxxxxxxxxxggG0sPoi1JH84';
+lib/utils/constants.dart
+
 
 
 # Miscellaneous
