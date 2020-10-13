@@ -45,6 +45,5 @@ class CustomPageTransitionBuilder extends PageTransitionsBuilder {
       child: child,
     );
     
-    throw UnimplementedError();
   }
 }
